@@ -8,7 +8,7 @@
 This work is based on [Matterport](https://github.com/matterport/Mask_RCNN) repo.
 A `run_webcam.py` script has been added for live demo purposes, which focuses on runtime performance instead of model accuracy.
 This was tested using a single 1080Ti.
-With no screen recording, it achieved 9~10 fps on average. During the recording, the performance dropped to 8~9fps on average. Any constructive comments and suggestions are greatly appreciated. Pull requests are also welcome!
+With no screen recording, it achieved 9-10 fps on average. During the recording, the performance dropped to 8-9fps on average. Any constructive comments and suggestions are greatly appreciated. Pull requests are also welcome!
 
 [![Demo](assets/demo.gif "Click to watch the full video")](https://youtu.be/L1t8jYBwI5E)
 
