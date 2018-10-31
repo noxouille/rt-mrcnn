@@ -5,6 +5,8 @@
 ![](https://img.shields.io/badge/keras-2.0.8-red.svg)
 ![](https://img.shields.io/badge/opencv-3.4.3-brightgreen.svg)
 
+UPDATE: Confirmed to be working fine on Ubuntu Budgie 18.04.1, with CUDA 9.0, cuDNN v7.3.1.20, Keras 2.2.4 and TensorFlow 1.11.0
+
 This work is based on [Matterport](https://github.com/matterport/Mask_RCNN) repo.
 A `run_webcam.py` script has been added for live demo purposes, which focuses on runtime performance instead of model accuracy.
 This was tested using a single 1080Ti.
@@ -191,14 +193,14 @@ If you use Docker, the code has been verified to work on
 
 
 ## Installation
-1. Install dependencies
+1. Clone this repository and go into your conda environment
+2. Install dependencies in order
    ```bash
-   pip3 install -r requirements.txt
+   cat requirements.txt | xargs -n 1 -L 1 pip install
    ```
-2. Clone this repository
 3. Run setup from the repository root directory
     ```bash
-    python3 setup.py install
+    python setup.py install
     ``` 
 3. Download pre-trained COCO weights (mask_rcnn_coco.h5) from the [releases page](https://github.com/matterport/Mask_RCNN/releases).
 4. (Optional) To train or test on MS COCO install `pycocotools` from one of these repos. They are forks of the original pycocotools with fixes for Python3 and Windows (the official repo doesn't seem to be active anymore).
