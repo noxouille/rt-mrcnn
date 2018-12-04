@@ -1,11 +1,11 @@
-# Live Mask R-CNN for Object Detection and Segmentation
+# Live Mask R-CNN for Object Detection and Segmentation <!-- omit in toc -->
 
 ![](https://img.shields.io/badge/python-3.4-blue.svg)
 ![](https://img.shields.io/badge/tensorflow-1.3-orange.svg)
 ![](https://img.shields.io/badge/keras-2.0.8-red.svg)
 ![](https://img.shields.io/badge/opencv-3.4.3-brightgreen.svg)
 
-UPDATE: Confirmed to be working fine on Ubuntu Budgie 18.04.1, with CUDA 9.0, cuDNN v7.3.1.20, Keras 2.2.4 and TensorFlow 1.11.0
+UPDATE: Confirmed to be working fine on Ubuntu (Gnome3 & Budgie) 18.04.1, with CUDA 9.0, cuDNN v7.3.1.20, Keras 2.2.4 and TensorFlow 1.11.0
 
 This work is based on [Matterport](https://github.com/matterport/Mask_RCNN) repo.
 A `run_webcam.py` script has been added for live demo purposes, which focuses on runtime performance instead of model accuracy.
@@ -16,7 +16,38 @@ With no screen recording, it achieved 9-10 fps on average. During the recording,
 
 This is an implementation of [Mask R-CNN](https://arxiv.org/abs/1703.06870) on Python 3, Keras, and TensorFlow. The model generates bounding boxes and segmentation masks for each instance of an object in the image. It's based on Feature Pyramid Network (FPN) and a ResNet101 backbone.
 
-![Instance Segmentation Sample](assets/street.png)
+## Table of Contents <!-- omit in toc -->
+
+- [Installation](#installation)
+- [Getting Started](#getting-started)
+- [Step by Step Detection](#step-by-step-detection)
+    - [1. Anchor sorting and filtering](#1-anchor-sorting-and-filtering)
+    - [2. Bounding Box Refinement](#2-bounding-box-refinement)
+    - [3. Mask Generation](#3-mask-generation)
+    - [4. Layer activations](#4-layer-activations)
+    - [5. Weight Histograms](#5-weight-histograms)
+    - [6. Logging to TensorBoard](#6-logging-to-tensorboard)
+    - [7. Composing the different pieces into a final result](#7-composing-the-different-pieces-into-a-final-result)
+- [Training on MS COCO](#training-on-ms-coco)
+- [Training on Your Own Dataset](#training-on-your-own-dataset)
+    - [Differences from the Official Paper](#differences-from-the-official-paper)
+    - [Citation](#citation)
+    - [Contributing](#contributing)
+    - [Requirements](#requirements)
+        - [MS COCO Requirements:](#ms-coco-requirements)
+- [Projects Using this Model](#projects-using-this-model)
+        - [4K Video Demo by Karol Majek.](#4k-video-demo-by-karol-majek)
+        - [Images to OSM: Improve OpenStreetMap by adding baseball, soccer, tennis, football, and basketball fields.](#images-to-osm-improve-openstreetmap-by-adding-baseball-soccer-tennis-football-and-basketball-fields)
+        - [Splash of Color. A blog post explaining how to train this model from scratch and use it to implement a color splash effect.](#splash-of-color-a-blog-post-explaining-how-to-train-this-model-from-scratch-and-use-it-to-implement-a-color-splash-effect)
+        - [Segmenting Nuclei in Microscopy Images. Built for the 2018 Data Science Bowl](#segmenting-nuclei-in-microscopy-images-built-for-the-2018-data-science-bowl)
+        - [Detection and Segmentation for Surgery Robots by the NUS Control & Mechatronics Lab.](#detection-and-segmentation-for-surgery-robots-by-the-nus-control--mechatronics-lab)
+        - [Reconstructing 3D buildings from aerial LiDAR](#reconstructing-3d-buildings-from-aerial-lidar)
+        - [Usiigaci: Label-free Cell Tracking in Phase Contrast Microscopy](#usiigaci-label-free-cell-tracking-in-phase-contrast-microscopy)
+        - [Characterization of Arctic Ice-Wedge Polygons in Very High Spatial Resolution Aerial Imagery](#characterization-of-arctic-ice-wedge-polygons-in-very-high-spatial-resolution-aerial-imagery)
+        - [Mask-RCNN Shiny](#mask-rcnn-shiny)
+        - [Mapping Challenge: Convert satellite imagery to maps for use by humanitarian organisations.](#mapping-challenge-convert-satellite-imagery-to-maps-for-use-by-humanitarian-organisations)
+        - [GRASS GIS Addon to generate vector masks from geospatial imagery. Based on a Master's thesis by Ondřej Pešek.](#grass-gis-addon-to-generate-vector-masks-from-geospatial-imagery-based-on-a-masters-thesis-by-ondřej-pešek)
+
 
 The repository includes:
 * Source code of Mask R-CNN built on FPN and ResNet101.
@@ -28,8 +59,25 @@ The repository includes:
 * Example of training on your own dataset
 
 
-The code is documented and designed to be easy to extend. If you use it in your research, please consider citing this repository (bibtex below). If you work on 3D vision, you might find our recently released [Matterport3D](https://matterport.com/blog/2017/09/20/announcing-matterport3d-research-dataset/) dataset useful as well.
-This dataset was created from 3D-reconstructed spaces captured by our customers who agreed to make them publicly available for academic use. You can see more examples [here](https://matterport.com/gallery/).
+# Installation
+
+**For quick setup for webcam demo, run step 1-3.**
+
+1. Clone this repository and go into your conda environment
+2. Install dependencies in order
+   ```bash
+   cat requirements.txt | xargs -n 1 -L 1 pip install
+   ```
+3. Run setup from the repository root directory
+    ```bash
+    python setup.py install
+    ``` 
+4. Download pre-trained COCO weights (mask_rcnn_coco.h5) from the [releases page](https://github.com/matterport/Mask_RCNN/releases).
+5. (Optional) To train or test on MS COCO install `pycocotools` from one of these repos. They are forks of the original pycocotools with fixes for Python3 and Windows (the official repo doesn't seem to be active anymore).
+
+    * Linux: https://github.com/waleedka/coco
+    * Windows: https://github.com/philferriere/cocoapi.
+    You must have the Visual C++ 2015 build tools on your path (see the repo for additional details)
 
 # Getting Started
 * [demo.ipynb](samples/demo.ipynb) Is the easiest way to start. It shows an example of using a model pre-trained on MS COCO to segment objects in your own images.
@@ -69,7 +117,7 @@ Examples of generated masks. These then get scaled and placed on the image in th
 
 ![](assets/detection_masks.png)
 
-## 4.Layer activations
+## 4. Layer activations
 Often it's useful to inspect the activations at different layers to look for signs of trouble (all zeros or random noise).
 
 ![](assets/detection_activations.png)
@@ -84,7 +132,7 @@ TensorBoard is another great debugging and visualization tool. The model is conf
 
 ![](assets/detection_tensorboard.png)
 
-## 6. Composing the different pieces into a final result
+## 7. Composing the different pieces into a final result
 
 ![](assets/detection_final.png)
 
@@ -191,23 +239,6 @@ To train or test on MS COCO, you'll also need:
 If you use Docker, the code has been verified to work on
 [this Docker container](https://hub.docker.com/r/waleedka/modern-deep-learning/).
 
-
-## Installation
-1. Clone this repository and go into your conda environment
-2. Install dependencies in order
-   ```bash
-   cat requirements.txt | xargs -n 1 -L 1 pip install
-   ```
-3. Run setup from the repository root directory
-    ```bash
-    python setup.py install
-    ``` 
-3. Download pre-trained COCO weights (mask_rcnn_coco.h5) from the [releases page](https://github.com/matterport/Mask_RCNN/releases).
-4. (Optional) To train or test on MS COCO install `pycocotools` from one of these repos. They are forks of the original pycocotools with fixes for Python3 and Windows (the official repo doesn't seem to be active anymore).
-
-    * Linux: https://github.com/waleedka/coco
-    * Windows: https://github.com/philferriere/cocoapi.
-    You must have the Visual C++ 2015 build tools on your path (see the repo for additional details)
 
 # Projects Using this Model
 If you extend this model to other datasets or build projects that use it, we'd love to hear from you.
