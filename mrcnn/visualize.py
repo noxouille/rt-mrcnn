@@ -86,9 +86,11 @@ def apply_mask(image, mask, color, alpha=0.5):
 
 def display_instances(image, boxes, masks, class_ids, class_names, scores, colors=None):
     N = boxes.shape[0]
-    if not N:
-        print('\n*** No instances to display *** \n')
-    else:
+    #if not N:
+    #    print('\n*** No instances to display *** \n')
+    #else:
+    #    assert boxes.shape[0] == masks.shape[-1] == class_ids.shape[0]
+    if N:
         assert boxes.shape[0] == masks.shape[-1] == class_ids.shape[0]
 
     colors = colors
@@ -266,9 +268,11 @@ white = (255, 255, 255)
 def display_instances_10fps(image, boxes, masks, class_ids, class_names, 
     scores, colors, real_time=True):
     N = boxes.shape[0]
-    if not N:
-        print('\n*** No instances to display *** \n')
-    else:
+    #if not N:
+    #    print('\n*** No instances to display *** \n')
+    #else:
+    #    assert boxes.shape[0] == masks.shape[-1] == class_ids.shape[0]
+    if N:
         assert boxes.shape[0] == masks.shape[-1] == class_ids.shape[0]
 
     # Convert to Grayscale background

@@ -64,7 +64,7 @@ colors = visualize.random_colors(len(class_names))
 gentle_grey = (45, 65, 79)
 white = (255, 255, 255)
 
-OPTIMIZE_CAM = True
+OPTIMIZE_CAM = False
 SHOW_FPS = False
 SHOW_FPS_WO_COUNTER = True # faster
 PROCESS_IMG = True
@@ -142,7 +142,7 @@ while True:
     s = cv2.resize(s,(1920,1080))
     cv2.imshow(SCREEN_NAME, s)
     
-    if cv2.waitKey(1) & 0xFF == ord('q'):
+    if cv2.waitKey(10) & 0xFF == ord('q'):
         break
     
 # When everything done, release the capture
