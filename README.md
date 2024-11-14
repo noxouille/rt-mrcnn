@@ -12,8 +12,6 @@ A `run_webcam.py` script has been added for live demo purposes, which focuses on
 This was tested using a single 1080Ti.
 With no screen recording, it achieved 9-10 fps on average. During the recording, the performance dropped to 8-9fps on average. Any constructive comments and suggestions are greatly appreciated. Pull requests are also welcome!
 
-[![Demo](assets/demo.gif "Click to watch the full video")](https://youtu.be/L1t8jYBwI5E)
-
 This is an implementation of [Mask R-CNN](https://arxiv.org/abs/1703.06870) on Python 3, Keras, and TensorFlow. The model generates bounding boxes and segmentation masks for each instance of an object in the image. It's based on Feature Pyramid Network (FPN) and a ResNet101 backbone.
 
 ## Table of Contents <!-- omit in toc -->
